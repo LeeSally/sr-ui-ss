@@ -1,0 +1,539 @@
+.srui-antd-query-condition-empty {
+  color: #ccc;
+  font-size: 12px;
+}
+.srui-antd-query-condition-item-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 6px;
+}
+.srui-antd-pipeline-canvas {
+  background-color: #fcfcfc;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+}
+.srui-antd-pipeline-canvas-flex-box {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+.srui-antd-pipeline-canvas-flex-box-stage {
+  border-right: 2px dashed #ececec;
+  padding: 16px 28px;
+  padding-left: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.srui-antd-pipeline-canvas-flex-box-stage:first-child {
+  padding-left: 28px;
+}
+.srui-antd-pipeline-canvas-flex-box-stage-cell {
+  position: relative;
+}
+.srui-antd-pipeline-canvas-flex-box-stage-cell-add-btn {
+  position: absolute;
+  z-index: 3;
+  top: 25px;
+  right: -28px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid #cdcdcd;
+  background-color: #fff;
+  text-align: center;
+  font-size: 10px;
+  color: #666;
+  transform: translate(50%, -50%);
+}
+.srui-antd-pipeline-canvas-flex-box-stage-cell-add-btn:hover {
+  border-color: skyblue;
+  color: skyblue;
+}
+.srui-antd-pipeline-canvas-flex-box-stage-place-holder {
+  min-height: 87px;
+  background-color: #fafafa;
+  border: 1px dashed #eee;
+  padding: 6px;
+  border-radius: 3px;
+  box-sizing: border-box;
+  color: #ccc;
+  opacity: 0;
+}
+.srui-antd-pipeline-canvas-flex-box.moving {
+  pointer-events: none;
+}
+.srui-antd-pipeline-canvas-table-box {
+  table-layout: auto;
+  position: relative;
+}
+.srui-antd-pipeline-canvas-table-box-cell {
+  border-right: 2px dashed #ececec;
+  padding: 16px 28px;
+  padding-left: 56px;
+}
+.srui-antd-pipeline-canvas-table-box-cell:first-child {
+  padding-left: 28px;
+}
+.srui-antd-pipeline-canvas-table-box-cell-add-btn {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid #cdcdcd;
+  background-color: #fff;
+  text-align: center;
+  font-size: 10px;
+  color: #666;
+  transform: translate(50%, -50%);
+}
+.srui-antd-pipeline-canvas-table-box-cell-add-btn:hover {
+  border-color: skyblue;
+  color: skyblue;
+}
+.srui-antd-pipeline-canvas-table-box td {
+  position: relative;
+}
+.srui-antd-pipeline-canvas-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.srui-antd-pipeline-canvas-svg path {
+  pointer-events: all;
+  cursor: pointer;
+}
+.srui-antd-pipeline-canvas-svg path:hover {
+  stroke: #1e90ff;
+  stroke-width: 3px;
+  stroke-dasharray: unset;
+}
+.srui-antd-pipeline-canvas-svg text {
+  max-width: 36px;
+  border: 1px solid #333;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.srui-antd-pipeline-canvas-svg-tag-box {
+  position: absolute;
+  border: 1px solid #eee;
+}
+.srui-antd-pipeline-canvas-svg:not(:root) {
+  overflow-clip-margin: content-box;
+  overflow: hidden;
+  pointer-events: none;
+}
+.srui-antd-pipeline-canvas-connect-line:hover {
+  fill: skyblue;
+}
+.srui-antd-pipeline-editor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: row;
+}
+.srui-antd-pipeline-editor-canvas-box {
+  flex: 1;
+  overflow: hidden;
+}
+.srui-antd-pipeline-editor-node-detail-pane {
+  width: 420px;
+  box-sizing: border-box;
+  padding: 6px;
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: -3px 0 6px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #eee;
+}
+.srui-antd-pipeline-editor-node-detail-pane.hide {
+  display: none;
+}
+.srui-antd-pipeline-editor-node-detail-pane-label {
+  display: flex;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+  gap: 12px;
+}
+.srui-antd-pipeline-editor-node-detail-pane-icon {
+  padding: 3px 6px;
+  font-size: 16px;
+  color: #fff;
+  border-radius: 6px;
+}
+.srui-antd-pipeline-editor-node-detail-pane-title {
+  margin: 0;
+  font-size: 16px;
+}
+.srui-antd-pipeline-editor-node-detail-pane-desc {
+  color: #999;
+  padding: 12px 6px;
+}
+.srui-antd-pipeline-editor-node-detail-pane-body {
+  padding: 12px 16px;
+  overflow: auto;
+  flex: 1;
+}
+.srui-antd-pipeline-editor-node-detail-pane-footer {
+  padding: 12px;
+  border-top: 1px solid #eee;
+}
+.srui-antd-query-condition-edit-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px dashed #fff566;
+  background-color: #feffe6;
+  position: relative;
+}
+.srui-antd-query-condition-edit-item-content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+.srui-antd-query-condition-edit-item-content-field {
+  min-width: 160px;
+}
+.srui-antd-query-condition-edit-item-content-operator {
+  min-width: 100px;
+}
+.srui-antd-query-condition-edit-item-content-value {
+  min-width: 100px;
+}
+.srui-antd-query-condition-edit-item-btns {
+  display: flex;
+  width: 54px;
+}
+.srui-antd-query-condition-edit-item-btns-btn {
+  align-items: center;
+}
+.srui-antd-query-condition-edit-item-err-info {
+  position: absolute;
+  right: 6px;
+  top: 3px;
+}
+.srui-antd-query-condition-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #ddf4fa;
+  border: 1px solid transparent;
+}
+.srui-antd-query-condition-item-content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  align-items: center;
+  gap: 16px;
+  padding: 3px 12px;
+  font-size: 14px;
+}
+.srui-antd-query-condition-item-content-name {
+  color: #172b54;
+}
+.srui-antd-query-condition-item-content-operator {
+  background-color: #fff;
+  padding: 0 6px;
+  line-height: 1.2em;
+  color: #57c9e8;
+}
+.srui-antd-query-condition-item-btns {
+  display: flex;
+}
+.srui-antd-query-condition-item-btns-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.srui-antd-query-condition-item-btns.hide {
+  display: none;
+}
+.srui-antd-query-condition-item:hover-btns-btn {
+  display: flex;
+}
+.srui-antd-query-condition-item.small-content {
+  font-size: 12px;
+  gap: 12px;
+  padding: 2px 6px;
+}
+.srui-antd-query-condition-item.small-content-operator {
+  padding: 0 3px;
+}
+.srui-antd-query-condition-edit-group {
+  border: 1px dashed #fff566;
+  padding: 6px 12px;
+  flex: 1;
+  background-color: #feffe6;
+}
+.srui-antd-query-condition-group {
+  border: 1px solid #e5e5e5;
+  background-color: #fff;
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  max-width: 100%;
+  gap: 6px;
+}
+.srui-antd-query-condition-group.expanded {
+  border-color: #bae0ff;
+}
+.srui-antd-query-condition-group-header-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+}
+.srui-antd-query-condition-group-header-bar .btns {
+  position: relative;
+  margin: 0 6px;
+}
+.srui-antd-query-condition-group-header-bar .btns.hide {
+  display: none;
+}
+.srui-antd-query-condition-group-conditions-desc {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding: 4px 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 14px;
+  color: #999;
+  line-height: 1.5em;
+}
+.srui-antd-query-condition-group-conditions-desc-root-operator {
+  color: #57c9e8;
+  background-color: #ddf4fa;
+  padding: 0 6px;
+  margin-right: 6px;
+  font-size: 12px;
+}
+.srui-antd-query-condition-group-conditions-desc-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+  padding: 0 6px;
+}
+.srui-antd-query-condition-group-conditions-desc-item-field {
+  color: #172b54;
+}
+.srui-antd-query-condition-group-conditions-desc-item-value {
+  color: #333;
+}
+.srui-antd-query-condition-group-conditions-desc-operator {
+  background-color: #ddf4fa;
+  padding: 0 5px;
+  margin: 0 8px;
+}
+.srui-antd-query-condition-group-filter-list {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  overflow: hidden;
+  gap: 6px;
+  padding: 6px 12px;
+}
+.srui-antd-query-condition-group-filter-list-operator {
+  margin: 6px 12px;
+  background-color: #ddf4fa;
+  padding: 0 6px;
+  color: #57c9e8;
+  font-size: 12px;
+  text-align: center;
+}
+.srui-antd-query-condition-group-empty-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1em;
+}
+.srui-antd-query-condition-group-empty-box .icon {
+  color: #ccc;
+  font-size: 18px;
+}
+.srui-antd-query-condition-group-empty-box::after {
+  content: '<Empty>';
+  color: #ccc;
+  font-size: 12px;
+  margin: 0 6px;
+}
+.srui-antd-query-condition-group-editing-wrap {
+  padding: 8px 12px;
+}
+.srui-antd-query-condition-group .hide {
+  display: none;
+}
+.srui-antd-query-condition-group.small .headerBar {
+  gap: 6px;
+}
+.srui-antd-query-condition-group.small .headerBar .conditionsDesc {
+  padding: 2px 6px;
+  font-size: 12px;
+}
+.srui-antd-query-condition-group.small .filterList {
+  gap: 3px;
+  padding: 3px 6px;
+}
+.srui-antd-query-condition-group-menu-icon {
+  font-size: 16px !important;
+  color: #57c9e8;
+}
+.srui-antd-pipeline-node-base {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  width: 280px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 6px 3px rgba(0, 0, 0, 0.03);
+  background-color: #fff;
+}
+.srui-antd-pipeline-node-base-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  min-height: 48px;
+}
+.srui-antd-pipeline-node-base-label-icon-box {
+  min-width: 16px;
+  height: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  margin: 0 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #fff;
+  background-color: #69b1ff;
+}
+.srui-antd-pipeline-node-base-label-icon-box.danger {
+  background-color: #ff4d4f;
+}
+.srui-antd-pipeline-node-base-label-icon-box.warning {
+  background-color: #ffc53d;
+}
+.srui-antd-pipeline-node-base-label-icon-box.success {
+  background-color: #95de64;
+}
+.srui-antd-pipeline-node-base-label-title {
+  padding: 0 6px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+.srui-antd-pipeline-node-base-label-title-inner {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  overflow: hidden;
+  gap: 6px;
+}
+.srui-antd-pipeline-node-base-label-title-inner-name {
+  flex: 1;
+  overflow: hidden;
+  padding: 6px 0;
+  font-size: 14px;
+  color: #333;
+  white-space: pre-wrap;
+}
+.srui-antd-pipeline-node-base-label-title-inner-btn-edit {
+  display: flex;
+  min-width: 56px;
+}
+.srui-antd-pipeline-node-base-label-title-inner-btn-edit.hide {
+  display: none !important;
+}
+.srui-antd-pipeline-node-base-label-btn-expand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+  color: #666;
+  font-size: 10px;
+  padding: 3px;
+  margin: 3px 6px;
+}
+.srui-antd-pipeline-node-base-label.up .titleBar .inner .name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.srui-antd-pipeline-node-base-desc {
+  font-size: 11px;
+  padding: 6px;
+  color: #999;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 1.5em;
+}
+.srui-antd-pipeline-node-base-desc.expand {
+  white-space: pre-wrap;
+  text-overflow: unset;
+}
+.srui-antd-pipeline-node-base-detail-box {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.srui-antd-pipeline-node-base.editing {
+  background-color: #feffe6;
+  border: 1px dashed #fff566;
+}
+.srui-antd-pipeline-node-base.default:hover {
+  border-color: #69b1ff;
+}
+.srui-antd-pipeline-node-base.danger:hover {
+  border-color: #ff4d4f;
+}
+.srui-antd-pipeline-node-base.warning:hover {
+  border-color: #ffc53d;
+}
+.srui-antd-pipeline-node-base.success:hover {
+  border-color: #95de64;
+}

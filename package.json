@@ -1,0 +1,16 @@
+{
+  "name": "@sr-ui-ss/main",
+  "private": true,
+  "scripts": {},
+  "engines": {
+    "node": ">=12.22.1"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "author": "Sally Li",
+  "license": "ISC",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": ""
+}
