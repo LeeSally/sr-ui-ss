@@ -1,0 +1,155 @@
+@cls-prefix: srui-antd-query-condition-group;
+
+.@{cls-prefix} {
+  border: 1px solid #e5e5e5;
+  background-color: #fff;
+  padding: 0;
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  max-width: 100%;
+
+  gap: 6px;
+
+  &.expanded {
+    border-color: #bae0ff;
+  }
+
+  &-header-bar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+
+    .btns {
+      position: relative;
+      margin: 0 6px;
+
+      &.hide {
+        display: none;
+      }
+    }
+  }
+
+  &-conditions-desc {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    padding: 4px 12px;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 14px;
+    color: #999;
+    line-height: 1.5em;
+
+    &-root-operator {
+      color: #57c9e8;
+      background-color: #ddf4fa;
+      padding: 0 6px;
+      margin-right: 6px;
+      font-size: 12px;
+    }
+
+    &-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 3px;
+      padding: 0 6px;
+
+      &-field {
+        color: #172b54;
+      }
+
+      &-value {
+        color: #333;
+      }
+    }
+      
+    &-operator {
+      background-color: #ddf4fa;
+      padding: 0 5px;
+      margin: 0 8px;
+    }
+  }
+
+  &-filter-list {
+    list-style: none;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    overflow: hidden;
+    gap: 6px;
+    padding: 6px 12px;
+
+    &-operator {
+      margin: 6px 12px;
+      background-color: #ddf4fa;
+      padding: 0 6px;
+      color: #57c9e8;
+      font-size: 12px;
+      text-align: center;
+    }
+  }
+
+  &-empty-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1em;
+
+    .icon {
+      color: #ccc;
+      font-size: 18px;
+    }
+
+    &::after {
+      content: '<Empty>';
+      color: #ccc;
+      font-size: 12px;
+      margin: 0 6px;
+    }
+  }
+
+  &-editing-wrap {
+    padding: 8px 12px;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  &.small {
+    .headerBar {
+      gap: 6px;
+
+      .conditionsDesc {
+        padding: 2px 6px;
+        font-size: 12px;
+      }
+    }
+
+    .filterList {
+      gap: 3px;
+      padding: 3px 6px;
+    }
+  }
+}
+
+.@{cls-prefix}-menu-icon {
+  font-size: 16px !important;
+  color: #57c9e8;
+}

@@ -1,0 +1,49 @@
+@cls-prefix: srui-antd-query-condition-edit-item;
+
+.@{cls-prefix} {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px dashed #fff566;
+  background-color: #feffe6;
+  position: relative;
+
+  &-content {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    padding: 6px 12px;
+
+    font-size: 14px;
+
+    &-field {
+      min-width: 160px;
+    }
+
+    &-operator {
+      min-width: 100px;
+    }
+
+    &-value {
+      min-width: 100px;
+    }
+  }
+
+  &-btns {
+    display: flex;
+    width: 54px;
+
+    &-btn {
+      align-items: center;
+    }
+  }
+
+  &-err-info {
+    position: absolute;
+    right: 6px;
+    top: 3px;
+  }
+}

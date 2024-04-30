@@ -1,0 +1,170 @@
+@cls-prefix: srui-antd-pipeline-canvas;
+
+.@{cls-prefix} {
+  background-color: #fcfcfc;
+
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+
+  &-flex-box {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+
+    &-stage {
+      border-right: 2px dashed #ececec;
+      padding: 16px 28px;
+      padding-left: 56px;
+
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      &:first-child {
+        padding-left: 28px;
+      }
+
+      &-cell {
+        position: relative;
+
+        &-add-btn {
+          position: absolute;
+          z-index: 3;
+          top: 25px;
+          right: -28px;
+          width: 16px;
+          height: 16px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          border-radius: 50%;
+          border: 2px solid #cdcdcd;
+          background-color: #fff;
+
+          text-align: center;
+          font-size: 10px;
+          color: #666;
+
+          transform: translate(50%, -50%);
+
+          &:hover {
+            border-color: skyblue;
+            color: skyblue;
+          }
+        }
+      }
+
+      &-place-holder {
+        min-height: 87px;
+        background-color: #fafafa;
+        border: 1px dashed #eee;
+        padding: 6px;
+        border-radius: 3px;
+        box-sizing: border-box;
+        color: #ccc;
+        opacity: 0;
+      }
+    }
+
+    &.moving {
+      pointer-events: none;
+    }
+  }
+
+  &-table-box {
+    table-layout: auto;
+    position: relative;
+
+    &-cell {
+      border-right: 2px dashed #ececec;
+      padding: 16px 28px;
+      padding-left: 56px;
+
+      &:first-child {
+        padding-left: 28px;
+      }
+
+      &-add-btn {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        right: 0;
+        width: 16px;
+        height: 16px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+        border: 2px solid #cdcdcd;
+        background-color: #fff;
+
+        text-align: center;
+        font-size: 10px;
+        color: #666;
+
+        transform: translate(50%, -50%);
+
+        &:hover {
+          border-color: skyblue;
+          color: skyblue;
+        }
+      }
+
+    }
+
+    td {
+      position: relative;
+    }
+  }
+
+  &-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 2;
+
+    path {
+      pointer-events: all;
+      cursor: pointer;
+
+      &:hover {
+        stroke: #1e90ff;
+        stroke-width: 3px;
+        stroke-dasharray: unset;
+      }
+    }
+
+    text {
+      max-width: 36px;
+      border: 1px solid #333;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &-tag-box {
+      position: absolute;
+      border: 1px solid #eee;
+    }
+
+    &:not(:root) {
+      overflow-clip-margin: content-box;
+      overflow: hidden;
+      pointer-events: none;
+    }
+  }
+
+}
+
+.@{cls-prefix}-connect-line {
+  &:hover {
+    fill: skyblue
+  }
+}

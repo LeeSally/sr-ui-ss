@@ -3,6 +3,8 @@ import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import React, { createContext, useContext, useState, useEffect, useMemo, createElement, useRef } from 'react';
 import { Space, Button, Select, Checkbox, Input, Tooltip, Row, Col, Dropdown, Empty, Badge, Popconfirm, Descriptions, Typography, Tag, Divider, Table, List } from 'antd';
 import { EditOutlined, SearchOutlined, ForkOutlined, PartitionOutlined, CarryOutOutlined, CaretRightOutlined, DeleteOutlined, CheckOutlined, CloseOutlined, WarningOutlined, TagOutlined, TagsOutlined, DownOutlined, InboxOutlined, PlusOutlined, PlusCircleOutlined, QuestionCircleOutlined, SaveOutlined, UpOutlined, UserOutlined, SubnodeOutlined } from '@ant-design/icons';
+import 'dayjs';
+import axios from 'axios';
 import { useMemoizedFn, useBoolean, useToggle } from 'ahooks';
 
 /**
@@ -133,6 +135,535 @@ var isEquals = function (val1, val2, typeEquals) {
     return isEqual;
 };
 
+/**
+ * 十六进制字符对应数值映射
+ */
+var HEX_VAL_MAP = {
+    A: 10,
+    B: 11,
+    C: 12,
+    D: 13,
+    E: 14,
+    F: 15,
+};
+for (var i = 0; i < 10; i++) {
+    HEX_VAL_MAP[i.toString()] = i;
+}
+
+var service = axios.create({
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+    timeout: 60000,
+});
+service.interceptors.request.use(function (config) {
+    if (config.headers !== undefined) {
+        config.headers = {};
+    }
+    return Promise.resolve(config);
+}, function (error) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Promise.reject(error)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); });
+service.interceptors.response.use(function (response) {
+    var res = response.data;
+    if (res.code !== 0) {
+        console.warn('Unexpected response', response.data);
+    }
+    return response;
+}, function (err) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, statusCode;
+    return __generator(this, function (_a) {
+        if (err.code === 'ERR_CANCELED') {
+            console.warn(err);
+            return [2 /*return*/];
+        }
+        response = err.response;
+        statusCode = Number(response === null || response === void 0 ? void 0 : response.status);
+        if (statusCode >= 500) {
+            console.error('HTTP 50X ERROR', response === null || response === void 0 ? void 0 : response.statusText, response === null || response === void 0 ? void 0 : response.data);
+        }
+        else if (statusCode >= 400) {
+            console.warn('HTTP 40X ERROR', response === null || response === void 0 ? void 0 : response.statusText, response === null || response === void 0 ? void 0 : response.data);
+        }
+        else {
+            console.error('ERROR', err.name, err.message, response);
+            return [2 /*return*/, Promise.reject(err)];
+        }
+        return [2 /*return*/];
+    });
+}); });
+
+/**
+ * A basic "Queue" data structure
+ * 基础队列数据结构
+ */
+var Queue = /** @class */ (function () {
+    function Queue(max) {
+        this._queue = [];
+        this._max = -1;
+        this._max = max !== null && max !== void 0 ? max : -1;
+    }
+    /**
+     * Queue is empty or not
+     * 队列是否为空
+     * @returns {boolean}
+     */
+    Queue.prototype.isEmpty = function () {
+        return this._queue.length === 0;
+    };
+    /**
+     * Queue is full or not
+     * 队列是否已满
+     * @returns {boolean}
+     */
+    Queue.prototype.isFull = function () {
+        return this._max > 0 && this._queue.length >= this._max;
+    };
+    /**
+     * Enter an element into queue
+     * 将元素入队
+     * @param {T} item
+     * @returns
+     */
+    Queue.prototype.enqueue = function (item) {
+        if (this.isFull()) {
+            console.warn('[Queue]: the queue is full.');
+            return false;
+        }
+        this._queue.push(item);
+        return true;
+    };
+    /**
+     * Drop out the element from queue
+     * 出队
+     * @returns {T}
+     */
+    Queue.prototype.dequeue = function () {
+        if (this.isEmpty()) {
+            console.warn('[Queue]: the queue is empty.');
+            return undefined;
+        }
+        var firstItem = this._queue.shift();
+        return firstItem;
+    };
+    Object.defineProperty(Queue.prototype, "size", {
+        /**
+         * The queue's length
+         * 队列长度
+         */
+        get: function () {
+            return this._queue.length;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Queue.prototype, "front", {
+        /**
+         * The front element of queue
+         * 队首元素
+         */
+        get: function () {
+            if (this.isEmpty()) {
+                console.warn('[Queue]: the queue is empty.');
+                return undefined;
+            }
+            return this._queue[0];
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Queue.prototype, "rear", {
+        /**
+         * The rear element of queue
+         * 队尾元素
+         */
+        get: function () {
+            if (this.isEmpty()) {
+                console.warn('[Queue]: the queue is empty.');
+                return undefined;
+            }
+            return this._queue[this.size - 1];
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Queue.prototype.destroy = function () {
+        this._queue.map(function (item) {
+            item.destroy();
+        });
+    };
+    return Queue;
+}());
+
+/**
+ * A wrapped object of Worker
+ * Worker 线程包装对象
+ */
+var WorkerItem = /** @class */ (function () {
+    function WorkerItem(_a) {
+        var index = _a.index, scriptPath = _a.scriptPath;
+        this._running = false;
+        this._worker = new Worker(scriptPath);
+        this._index = index;
+    }
+    WorkerItem.prototype.run = function (args) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            var onMsgFn = args.onMsgFn, argsPostMsg = args.argsPostMsg;
+                            _this._running = true;
+                            _this._worker.onmessage = function (ev) {
+                                onMsgFn(ev);
+                                _this._running = false;
+                                resolve(_this._index);
+                            };
+                            _this._worker.onerror = function (err) {
+                                console.error('[WorkerItem::run]', err);
+                                _this._running = false;
+                                reject(err);
+                            };
+                            try {
+                                _this._worker.postMessage(argsPostMsg);
+                            }
+                            catch (error) {
+                                console.error('[WorkerItem::run]', error);
+                            }
+                            _this._running = false;
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Object.defineProperty(WorkerItem.prototype, "running", {
+        get: function () {
+            return this._running;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(WorkerItem.prototype, "index", {
+        get: function () {
+            return this._index;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    WorkerItem.prototype.destroy = function () {
+        this._worker.terminate();
+    };
+    return WorkerItem;
+}());
+
+var WorkerTaskStatus;
+(function (WorkerTaskStatus) {
+    WorkerTaskStatus[WorkerTaskStatus["NOT_START"] = 0] = "NOT_START";
+    WorkerTaskStatus[WorkerTaskStatus["RUNNING"] = 1] = "RUNNING";
+    WorkerTaskStatus[WorkerTaskStatus["FINISH"] = 2] = "FINISH";
+    WorkerTaskStatus[WorkerTaskStatus["ERROR"] = 3] = "ERROR";
+    WorkerTaskStatus[WorkerTaskStatus["DEAD"] = 4] = "DEAD";
+})(WorkerTaskStatus || (WorkerTaskStatus = {}));
+var WorkerTask = /** @class */ (function () {
+    function WorkerTask(_a) {
+        var id = _a.id, argsPostMsg = _a.argsPostMsg;
+        this._argsPostMsg = argsPostMsg;
+        this._id = id;
+        this._status = WorkerTaskStatus.NOT_START;
+    }
+    Object.defineProperty(WorkerTask.prototype, "status", {
+        get: function () {
+            return this._status;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(WorkerTask.prototype, "id", {
+        get: function () {
+            return this._id;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    WorkerTask.prototype.run = function (_a) {
+        var workerItem = _a.workerItem, onMessageFn = _a.onMessageFn;
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            _this._status = WorkerTaskStatus.RUNNING;
+                            setTimeout(function () {
+                                workerItem.run({ onMsgFn: onMessageFn, argsPostMsg: _this._argsPostMsg }).then(function () {
+                                    _this._status = WorkerTaskStatus.FINISH;
+                                    resolve(workerItem);
+                                }).catch(function (err) {
+                                    console.error('[WokerTask::run]', _this._id, _this._argsPostMsg, err);
+                                    _this._status = WorkerTaskStatus.ERROR;
+                                    reject(err);
+                                });
+                            });
+                        })];
+                    case 1: return [2 /*return*/, _b.sent()];
+                }
+            });
+        });
+    };
+    WorkerTask.prototype.destroy = function () {
+        this._status = WorkerTaskStatus.DEAD;
+    };
+    return WorkerTask;
+}());
+
+/**
+ * A basic worker pool
+ * worker 基础线程池
+ */
+var WorkerPoolBase = /** @class */ (function () {
+    function WorkerPoolBase(_a) {
+        var scriptPath = _a.scriptPath, size = _a.size;
+        this._pool = [];
+        this._stopping = false;
+        this._taskQueue = new Queue();
+        // create pool
+        for (var i = 0; i < size; i++) {
+            var workerItem = new WorkerItem({ index: i, scriptPath: scriptPath });
+            this._pool.push(workerItem);
+        }
+    }
+    /**
+     * Add task item  加入任务
+     * @param {AddTaskArgs<PostMsgArgs>}
+     */
+    WorkerPoolBase.prototype.addTask = function (_a) {
+        var _b;
+        var argsPostMsg = _a.argsPostMsg;
+        var taskId = "".concat(new Date().valueOf(), "_").concat(this._taskQueue.size);
+        var task = new WorkerTask({ id: taskId, argsPostMsg: argsPostMsg });
+        if ((_b = !this._taskQueue.enqueue(task)) !== null && _b !== void 0 ? _b : false) {
+            console.warn('[WorkerPool::addTask] Fail to add task', task);
+            return;
+        }
+        this.run();
+    };
+    WorkerPoolBase.prototype.stop = function () {
+        this._stopping = true;
+    };
+    WorkerPoolBase.prototype.onMessageFn = function (ev) {
+        // to be impletemented by inheritor
+        console.log(ev);
+    };
+    /**
+     * Run the next task in the worker item
+     * 在 worker 对象中执行下一个任务
+     * @param { WorkerItemProps<PostMsgArgs>} workerItem
+     * @returns {Promise<any>}
+     */
+    WorkerPoolBase.prototype.runNextTask = function (workerItem) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            if (_this._stopping) {
+                                console.warn('[WorkerPool::runNextTask] Worker Pool is stopping...');
+                                reject(new Error('[WorkerPool::runNextTask] Worker Pool is stopping...'));
+                                return;
+                            }
+                            var task = _this.dequeueTask();
+                            if (task === undefined) {
+                                resolve('[WorkerPool::runNextTask] Tasks in queue all finished');
+                                return;
+                            }
+                            task.run({ workerItem: workerItem, onMessageFn: _this.onMessageFn }).then(function () {
+                                _this.runNextTask(workerItem).then(function () { }, function (err) { throw err; });
+                                resolve("[WorkerPool::runNextTask] Finish task \"".concat(task.id, "\""));
+                            }, function (err) {
+                                console.error('[WorkerPool::runNextTask]', err);
+                                reject(err);
+                            });
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    /**
+     * Run the worker pool
+     * 运行线程池
+     * @returns
+     */
+    WorkerPoolBase.prototype.run = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var idlePoolItems, _loop_1, this_1, i;
+            return __generator(this, function (_a) {
+                idlePoolItems = this._pool.filter(function (itm) { return !itm.running; });
+                if (idlePoolItems.length === 0) {
+                    console.warn('[WorkerPool::run] NO idle poolitem');
+                    return [2 /*return*/];
+                }
+                _loop_1 = function (i) {
+                    this_1.runNextTask(idlePoolItems[i]).then(function () { }, function (err) {
+                        console.error('[WorkerPool::run]', idlePoolItems[i], err);
+                    });
+                };
+                this_1 = this;
+                for (i = 0; i < idlePoolItems.length; i++) {
+                    _loop_1(i);
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
+    Object.defineProperty(WorkerPoolBase.prototype, "runningCount", {
+        /**
+         * The count of worker in running
+         * 正在运行的 worker 对象个数
+         */
+        get: function () {
+            return this._pool.filter(function (itm) { return itm.running; }).length;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(WorkerPoolBase.prototype, "isStopping", {
+        get: function () {
+            return this._stopping;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    WorkerPoolBase.prototype.dequeueTask = function () {
+        return this._taskQueue.dequeue();
+    };
+    WorkerPoolBase.prototype.enqueueTask = function (task) {
+        this._taskQueue.enqueue(task);
+    };
+    Object.defineProperty(WorkerPoolBase.prototype, "taskCount", {
+        get: function () {
+            return this._taskQueue.size;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    /**
+     * Destroy 销毁
+     */
+    WorkerPoolBase.prototype.destroy = function () {
+        this._stopping = true;
+        // worker pool
+        this._pool.map(function (itm) {
+            itm.destroy();
+            return null;
+        });
+        this._pool = [];
+        // task queue
+        this._taskQueue.destroy();
+    };
+    return WorkerPoolBase;
+}());
+
+/**
+ * A worker pool, pass onMessage function
+ * worker 线程池实例
+ */
+/** @class */ ((function (_super) {
+    __extends(WorkerPoolOnMsg, _super);
+    function WorkerPoolOnMsg(args) {
+        var _this = _super.call(this, args) || this;
+        _this._onMessageFn = args.onMessageFn;
+        return _this;
+    }
+    WorkerPoolOnMsg.prototype.onMessageFn = function (ev) {
+        this._onMessageFn(ev);
+    };
+    return WorkerPoolOnMsg;
+})(WorkerPoolBase));
+
+var WorkerTaskOnMsgCreator = /** @class */ (function (_super) {
+    __extends(WorkerTaskOnMsgCreator, _super);
+    function WorkerTaskOnMsgCreator(args) {
+        var _this = _super.call(this, args) || this;
+        var argsOnMsgCreator = args.argsOnMsgCreator;
+        _this._argsOnMsgCreator = argsOnMsgCreator;
+        return _this;
+    }
+    Object.defineProperty(WorkerTaskOnMsgCreator.prototype, "OnMsgCreatorArgs", {
+        get: function () {
+            return this._argsOnMsgCreator;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return WorkerTaskOnMsgCreator;
+}(WorkerTask));
+
+/**
+ * A worker pool, pass onMessage creator factory function
+ * worker 线程池, onMessage 生成工厂函数
+ */
+/** @class */ ((function (_super) {
+    __extends(WorkerPoolOnMsgCreator, _super);
+    function WorkerPoolOnMsgCreator(args) {
+        var _this = _super.call(this, args) || this;
+        _this._onMsgFnCreator = args.onMsgFnCreator;
+        return _this;
+    }
+    /**
+     * Add task item  加入任务
+     * @param {AddTaskArgs<PostMsgArgs>}
+     */
+    WorkerPoolOnMsgCreator.prototype.addTask = function (_a) {
+        var argsPostMsg = _a.argsPostMsg, argsOnMsgCreator = _a.argsOnMsgCreator;
+        var taskId = "".concat(new Date().valueOf(), "_").concat(this.taskCount);
+        var task = new WorkerTaskOnMsgCreator({ id: taskId, argsPostMsg: argsPostMsg, argsOnMsgCreator: argsOnMsgCreator });
+        this.enqueueTask(task);
+    };
+    /**
+     * Run the next task in the worker item
+     * 在 worker 对象中执行下一个任务
+     * @param { WorkerItemProps<PostMsgArgs>} workerItem
+     * @returns {Promise<any>}
+     */
+    WorkerPoolOnMsgCreator.prototype.runNextTask = function (workerItem) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            if (_this.isStopping) {
+                                console.warn('[WorkerPool::runNextTask] Worker Pool is stopping...');
+                                reject(new Error('[WorkerPool::runNextTask] Worker Pool is stopping...'));
+                                return;
+                            }
+                            var task = _this.dequeueTask();
+                            if (task === undefined) {
+                                resolve('[WorkerPool::runNextTask] Tasks in queue all finished');
+                                return;
+                            }
+                            var onMessageFn = _this._onMsgFnCreator(task.OnMsgCreatorArgs);
+                            task.run({ workerItem: workerItem, onMessageFn: onMessageFn }).then(function () {
+                                _this.runNextTask(workerItem).then(function () { }, function (err) { throw err; });
+                                resolve("[WorkerPool::runNextTask] Finish task \"".concat(task.id, "\""));
+                            }, function (err) {
+                                console.error('[WorkerPool::runNextTask]', err);
+                                reject(err);
+                            });
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    return WorkerPoolOnMsgCreator;
+})(WorkerPoolBase));
 
 var PIPELINE_NODE;
 (function (PIPELINE_NODE) {
@@ -852,13 +1383,20 @@ var useNodeTypeInfo = function (nodeType, taskKey) {
                 // preset task
                 return PIPELINE_NODE.PRESET_TASK_STYLES[presetTaskKey];
             }
+            var custom = customTaskDefs === null || customTaskDefs === void 0 ? void 0 : customTaskDefs.find(function (def) { return def.taskKey === taskKey; });
+            if ((custom === null || custom === void 0 ? void 0 : custom.color) !== undefined) {
+                return {
+                    color: custom === null || custom === void 0 ? void 0 : custom.color,
+                    icon: jsx(CarryOutOutlined, {})
+                };
+            }
         }
         var defaultStyle = {
             color: 'success',
             icon: jsx(CarryOutOutlined, {})
         };
         return nodeType === undefined ? defaultStyle : PIPELINE_NODE.STYLES[nodeType];
-    }, [nodeType, taskKey]);
+    }, [nodeType, taskKey, customTaskDefs]);
     var taskDef = useMemo(function () {
         if (nodeType !== PIPELINE_NODE.Type.TASK)
             return;
@@ -869,6 +1407,7 @@ var useNodeTypeInfo = function (nodeType, taskKey) {
         if (Object.values(PIPELINE_NODE.PresetTaskKey).includes(presetTaskKey)) {
             return PIPELINE_NODE.PRESET_TASK_DEFS[presetTaskKey];
         }
+        return { nodeType: nodeType, taskKey: taskKey };
     }, [nodeType, taskKey]);
     return {
         nodeTypeDef: nodeTypeDef,
@@ -976,11 +1515,9 @@ var ConditionItemBox = function (props) {
                             ? ((_d = (_b = (_a = RelationalOperatorsConst[operator]) === null || _a === void 0 ? void 0 : _a.symbol) !== null && _b !== void 0 ? _b : (_c = RelationalOperatorsConst[operator]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : operator)
                             : null })), jsx("span", __assign({ className: "".concat(clsPrefix$1, "-item-content-value") }, { children: (field === null || field === void 0 ? void 0 : field.dataType) === DATA_TYPES.STR
                             ? jsxs(Fragment, { children: ["\"", value, "\""] })
-                            : (field === null || field === void 0 ? void 0 : field.dataType) === DATA_TYPES.NUM
-                                ? value
-                                : (field === null || field === void 0 ? void 0 : field.dataType) === DATA_TYPES.BOOL
-                                    ? value === true ? 'True' : 'False'
-                                    : value }))] })), jsx("span", __assign({ className: classNames("".concat(clsPrefix$1, "-item-btns"), editable ? '' : 'hide') }, { children: jsxs(Space, { children: [openEdit !== undefined
+                            : (field === null || field === void 0 ? void 0 : field.dataType) === DATA_TYPES.BOOL
+                                ? value === true ? 'True' : 'False'
+                                : (field === null || field === void 0 ? void 0 : field.dataType) === DATA_TYPES.NUM ? Number(value) : value }))] })), jsx("span", __assign({ className: classNames("".concat(clsPrefix$1, "-item-btns"), editable ? '' : 'hide') }, { children: jsxs(Space, { children: [openEdit !== undefined
                             ? jsx(Button, { type: 'link', icon: jsx(EditOutlined, {}), size: 'small', onClick: openEdit, className: "".concat(clsPrefix$1, "-item-btns-btn") })
                             : null, jsx(Button, { type: 'link', danger: true, icon: jsx(DeleteOutlined, {}), size: 'small', onClick: onDelete, className: "".concat(clsPrefix$1, "-item-btns-btn") })] }) }))] })));
 };
@@ -1869,7 +2406,9 @@ var PipelineCustomTaskNode = function (props) {
         var _a, _b, _c;
         return (_c = (_b = (_a = node.params) === null || _a === void 0 ? void 0 : _a.map(function (para) { return "[".concat(para.name, "]"); }).join(', ')) !== null && _b !== void 0 ? _b : node.desc) !== null && _c !== void 0 ? _c : '<Blank>';
     }, [node.params, node.desc]);
-    return (jsx(PipelineBaseNode, __assign({ label: (_b = (_a = taskDef === null || taskDef === void 0 ? void 0 : taskDef.taskName) !== null && _a !== void 0 ? _a : nodeTypeDef === null || nodeTypeDef === void 0 ? void 0 : nodeTypeDef.nodeName) !== null && _b !== void 0 ? _b : 'Task' }, nodeTypeStyle, { abstract: abstractDesc, desc: node.desc, editable: editable, editing: editing, startEdit: onEditNode, endEdit: cancelEditing, onDel: onDelNode, changed: changed })));
+    return (jsx(PipelineBaseNode, __assign({ label: (nodeTypeDef === null || nodeTypeDef === void 0 ? void 0 : nodeTypeDef.nodeType) === PIPELINE_NODE.Type.TASK
+            ? (_b = (_a = taskDef === null || taskDef === void 0 ? void 0 : taskDef.taskName) !== null && _a !== void 0 ? _a : taskDef === null || taskDef === void 0 ? void 0 : taskDef.taskKey) !== null && _b !== void 0 ? _b : 'Task'
+            : nodeTypeDef === null || nodeTypeDef === void 0 ? void 0 : nodeTypeDef.nodeName }, nodeTypeStyle, { abstract: abstractDesc, desc: node.desc, editable: editable, editing: editing, startEdit: onEditNode, endEdit: cancelEditing, onDel: onDelNode, changed: changed })));
 };
 
 var PipelineTaskNodeEditor = function (props) {
@@ -2385,15 +2924,15 @@ var COLOR_MAP = {
     success: '#95de64'
 };
 var PipelineEditor = function (props) {
-    var _a, _b;
-    var pipelineDef = props.pipelineDef, _c = props.loading, loading = _c === void 0 ? false : _c;
-    var _d = useState(), curTrigger = _d[0], setCurTrigger = _d[1];
+    var _a, _b, _c;
+    var pipelineDef = props.pipelineDef, _d = props.loading, loading = _d === void 0 ? false : _d;
+    var _e = useState(), curTrigger = _e[0], setCurTrigger = _e[1];
     var changeTrigger = function (trigger) {
         setCurTrigger(trigger);
     };
     var pipelineEditor = usePipelineEditor(curTrigger, changeTrigger);
     var editingNode = pipelineEditor.editingNode, changed = pipelineEditor.changed, cancelEditing = pipelineEditor.cancelEditing, saveEditing = pipelineEditor.saveEditing, changeIfNode = pipelineEditor.changeIfNode, changeTriggerNode = pipelineEditor.changeTriggerNode, changeSwitchNode = pipelineEditor.changeSwitchNode;
-    var _e = useNodeTypeInfo(editingNode === null || editingNode === void 0 ? void 0 : editingNode.nodeType, (editingNode === null || editingNode === void 0 ? void 0 : editingNode.nodeType) === PIPELINE_NODE.Type.TASK ? editingNode.taskKey : undefined), nodeTypeDef = _e.nodeTypeDef, nodeTypeStyle = _e.nodeTypeStyle;
+    var _f = useNodeTypeInfo(editingNode === null || editingNode === void 0 ? void 0 : editingNode.nodeType, (editingNode === null || editingNode === void 0 ? void 0 : editingNode.nodeType) === PIPELINE_NODE.Type.TASK ? editingNode.taskKey : undefined), nodeTypeDef = _f.nodeTypeDef, nodeTypeStyle = _f.nodeTypeStyle, taskDef = _f.taskDef;
     useEffect(function () {
         setCurTrigger(pipelineDef === null || pipelineDef === void 0 ? void 0 : pipelineDef.trigger);
     }, [pipelineDef]);
@@ -2410,7 +2949,7 @@ var PipelineEditor = function (props) {
         }
     }, [editingNode]);
     return (jsxs("main", __assign({ className: "".concat(clsPrefix, "-editor") }, { children: [jsx("section", __assign({ className: "".concat(clsPrefix, "-editor-canvas-box") }, { children: jsx(PipelineCanvas$1, { trigger: curTrigger, loading: loading, editor: pipelineEditor }) })), jsxs("section", __assign({ className: classNames("".concat(clsPrefix, "-editor-node-detail-pane"), editingNode === undefined ? 'hide' : '') }, { children: [jsxs("header", __assign({ className: "".concat(clsPrefix, "-editor-node-detail-pane-label") }, { children: [jsx("div", { children: jsx("span", __assign({ className: "".concat(clsPrefix, "-editor-node-detail-pane-icon"), style: { backgroundColor: COLOR_MAP[(_a = nodeTypeStyle === null || nodeTypeStyle === void 0 ? void 0 : nodeTypeStyle.color) !== null && _a !== void 0 ? _a : 'default'] } }, { children: nodeTypeStyle === null || nodeTypeStyle === void 0 ? void 0 : nodeTypeStyle.icon })) }), jsx("h4", __assign({ className: "".concat(clsPrefix, "-editor-node-detail-pane-title") }, { children: (nodeTypeDef === null || nodeTypeDef === void 0 ? void 0 : nodeTypeDef.nodeType) === PIPELINE_NODE.Type.TASK
-                                    ? "".concat((_b = nodeTypeDef.nodeName) !== null && _b !== void 0 ? _b : 'Task', " - ").concat(nodeTypeDef.taskName)
+                                    ? "".concat((_b = nodeTypeDef.nodeName) !== null && _b !== void 0 ? _b : 'Task', " - ").concat((_c = taskDef === null || taskDef === void 0 ? void 0 : taskDef.taskName) !== null && _c !== void 0 ? _c : taskDef === null || taskDef === void 0 ? void 0 : taskDef.taskKey)
                                     : nodeTypeDef === null || nodeTypeDef === void 0 ? void 0 : nodeTypeDef.nodeName }))] })), (editingNode === null || editingNode === void 0 ? void 0 : editingNode.desc) !== undefined
                         ? jsx("div", __assign({ className: "".concat(clsPrefix, "-editor-node-detail-pane-desc") }, { children: editingNode.desc }))
                         : null, jsx("div", __assign({ className: "".concat(clsPrefix, "-editor-node-detail-pane-body") }, { children: nodeEditDetailPane })), jsx("footer", __assign({ className: "".concat(clsPrefix, "-editor-node-detail-pane-footer") }, { children: jsxs(Space, { children: [jsx(Button, __assign({ type: 'primary', icon: jsx(SaveOutlined, {}), onClick: saveEditing, disabled: !changed }, { children: "Save" })), jsx(Button, __assign({ type: 'link', onClick: cancelEditing }, { children: "Cancel" }))] }) }))] }))] })));
