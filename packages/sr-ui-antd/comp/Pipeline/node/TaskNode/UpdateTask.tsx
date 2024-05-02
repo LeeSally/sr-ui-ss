@@ -19,14 +19,19 @@ interface PipelineUpdateTaskNodeCompProps extends IWithEditor {
 }
 
 const PipelineUpdateTaskNode: React.FC<PipelineUpdateTaskNodeCompProps> = (props) => {
-  const { node, editable = false, editing, changed, cancelEditing, onEdit, onDel } = props
+  const { 
+    node, 
+    editable = false, editing, changed = false, 
+    saveEditing, cancelEditing, 
+    onEdit, onDel 
+  } = props
 
   const { writableFields } = useContext(PipelineContext)
   const rawFieldList = useMemo(() => {
     return node.fields?.map(field => ({
       type: 'item',
       field,
-      value: field.defaultValue,
+      value: field.id,
       operator: RELATIONAL_OPERATORS.EQUAL_TO
     })) as ConditionItemProps[]
   }, [writableFields, node.fields])
@@ -47,15 +52,16 @@ const PipelineUpdateTaskNode: React.FC<PipelineUpdateTaskNodeCompProps> = (props
 
   return (
     <PipelineBaseNode
-      label={taskDef?.taskName ?? 'Update Fields Task'} 
+      label={taskDef?.taskName ?? 'Update Fields Task'}
       {...nodeTypeStyle}
-      abstract={abstractDesc} desc={node.desc}
-      editable={editable} editing={editing} changed={changed} startEdit={onEditNode} endEdit={cancelEditing}
-      onDel={onDelNode}
+      abstract={abstractDesc} desc={node.desc} run={node?.run}
+      editable={editable} editing={editing} changed={changed}
+      saveEditing={saveEditing} cancelEditing={cancelEditing}
+      onEdit={onEditNode} onDel={onDelNode}
     >
       <QueryConditionItemListEditor
         fieldList={writableFields}
-        value={node.fields}
+        value={rawFieldList}
         size={'small'}
       />
     </PipelineBaseNode>

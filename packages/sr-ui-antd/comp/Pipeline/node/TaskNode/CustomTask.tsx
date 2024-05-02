@@ -15,7 +15,9 @@ interface PipelineCustomTaskNodeComp extends IWithEditor {
 const PipelineCustomTaskNode: React.FC<PipelineCustomTaskNodeComp> = (props) => {
   const {
     node,
-    editable = false, editing = false, changed, onEdit, cancelEditing, onDel
+    editable = false, editing = false, changed = false, 
+    onEdit, onDel, 
+    saveEditing, cancelEditing
   } = props
 
   const { nodeTypeDef, nodeTypeStyle, taskDef } = useNodeTypeInfo(PIPELINE_NODE.Type.TASK, node.taskKey)
@@ -40,9 +42,11 @@ const PipelineCustomTaskNode: React.FC<PipelineCustomTaskNodeComp> = (props) => 
           : nodeTypeDef?.nodeName
       }
       {...nodeTypeStyle}
-      abstract={abstractDesc} desc={node.desc}
-      editable={editable} editing={editing} startEdit={onEditNode} endEdit={cancelEditing}
-      onDel={onDelNode} changed={changed}
+      abstract={abstractDesc} desc={node.desc} run={node?.run}
+
+      editable={editable} editing={editing} changed={changed}
+      saveEditing={saveEditing} cancelEditing={cancelEditing}
+      onEdit={onEditNode} onDel={onDelNode}
     >
     </PipelineBaseNode>
   )

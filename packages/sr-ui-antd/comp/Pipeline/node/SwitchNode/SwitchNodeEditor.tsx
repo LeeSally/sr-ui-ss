@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext, ChangeEvent } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import type { ChangeEvent } from 'react'
 
 import { Descriptions, Divider, Select, Space, Button, Tag, Input } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -68,7 +69,7 @@ const PipelineSwitchNodeEditor: React.FC<SwitchNodeEditorProps> = (props) => {
           break
       }
       const newSwitch: PipelineNodeWithNext.Switch = {
-        ...node,
+        ...node
       }
       if (newSwitch?.caseNexts === undefined) {
         newSwitch.caseNexts = []
@@ -78,9 +79,7 @@ const PipelineSwitchNodeEditor: React.FC<SwitchNodeEditorProps> = (props) => {
 
       return nextKey
     })
-
   }, [newingNexts])
-
 
   const onDelCase = (groupIndex: number, caseIndex: number) => () => {
     const newCaseGroups = [...node?.caseGroups ?? []]
@@ -105,11 +104,11 @@ const PipelineSwitchNodeEditor: React.FC<SwitchNodeEditorProps> = (props) => {
     openNewCase()
   }
 
-  const onChangeNewCaseVal = (ele: ChangeEvent<HTMLInputElement>) => {
+  const onChangeNewCaseVal = (ele: ChangeEvent<HTMLInputElement>): void => {
     setNewCaseVal(ele.target.value)
   }
 
-  const confirmNewCaseVal = () => {
+  const confirmNewCaseVal = (): void => {
     if (activeNewCaseGroupIndex === undefined || newCaseVal === undefined) return
     const newCaseGroups = [...node?.caseGroups ?? []]
     newCaseGroups[activeNewCaseGroupIndex].push(newCaseVal)
@@ -123,7 +122,7 @@ const PipelineSwitchNodeEditor: React.FC<SwitchNodeEditorProps> = (props) => {
     closeNewCase()
   }
 
-  const onAddCaseGroup = () => {
+  const onAddCaseGroup = (): void => {
     const newCaseGroups = [...node?.caseGroups ?? []]
     newCaseGroups.push([])
     const newSwitch: PipelineNodeWithNext.Switch = {
@@ -144,7 +143,7 @@ const PipelineSwitchNodeEditor: React.FC<SwitchNodeEditorProps> = (props) => {
               value: field.id,
               label: field.name
             }))}
-            value={node.judgeField.id}
+            value={node.judgeField?.id}
             style={{ width: 160 }}
             onChange={changeField}
           />

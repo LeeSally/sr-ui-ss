@@ -26,7 +26,7 @@ const PipelineSvgLayer: React.FC<PipelineSvgLayerProps> = (props) => {
             const startPt = [startDomSize.left + startDomSize.width, startDomSize.top + 26]
             return ends.map((end, endIndex) => {
               const endDomSize = cellsSize?.[end.pos[0]]?.[end.pos[1]]
-              if (endDomSize === undefined) return null 
+              if (endDomSize === undefined) return null
               const endPt = [endDomSize.left, endDomSize.top + 26]
 
               let tagPos = [startPt[0] + (endPt[0] - startPt[0]) / 2, startPt[1] + (endPt[1] - startPt[1]) / 2]
@@ -54,15 +54,19 @@ const PipelineSvgLayer: React.FC<PipelineSvgLayerProps> = (props) => {
 
               return (
                 <g key={`${xIndex}-${yIndex}-${endIndex}`}>
-                  <path d={svgStr} fill={'transparent'} stroke={'#ccc'} strokeWidth={2} strokeDasharray={'4,3'}>
+                  <path d={svgStr} fill={'transparent'}
+                    stroke={end.lineStyle?.color ?? '#ccc'}
+                    strokeWidth={end.lineStyle?.width ?? 2} 
+                    strokeDasharray={end.lineStyle?.solid ? '0': '4,3'}
+                  >
                   </path>
-                  <circle cx={startPt[0]} cy={startPt[1]} r={5} fill={'#fff'} stroke={'#999'} />
-                  <circle cx={endPt[0]} cy={endPt[1]} r={3} fill={'#666'} stroke={'transparent'} />
+                  <circle cx={startPt[0]} cy={startPt[1]} r={5} fill={'#fff'} stroke={end.lineStyle?.color ?? '#999'} />
+                  <circle cx={endPt[0]} cy={endPt[1]} r={3} fill={end.lineStyle?.color ?? '#666'} stroke={'transparent'} />
                   {
                     intPts.map(pt => (
                       <circle key={`${pt[0]}-${pt[1]}`}
                         cx={pt[0]} cy={pt[1]} r={3}
-                        fill={'#fff'} stroke={'#999'} />
+                        fill={'#fff'} stroke={end.lineStyle?.color ?? '#999'} />
                     ))
                   }
                   {

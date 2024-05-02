@@ -1,26 +1,34 @@
-import type { PipelineNodeWithRun } from './'
 import type { PIPELINE_NODE } from '../node/consts'
+import type { PipelineNodeWithNext } from './nodeWithNext'
+
+export enum RunStatus {
+  NOT_START = 'not_start',
+  RUNNING = 'running',
+  WAIT = 'wait',
+  SUCCESS = 'success',
+  FAILED = 'failed'
+}
+/**
+ * Interface to contains a run result status
+ */
+export interface IWithRun {
+  run?: {
+    status: RunStatus
+    desc: string
+    processingCount: number
+  }
+}
 
 /**
- * Pipeline node with Position information in canvas
+ * Pipeline node with run result status
  */
-export namespace PipelineNodeWithPos {
-  interface IWithPos {
-    gridPos: {
-      start: [number, number]
-      end: [number, number]
-      chainIdx: number[]
-    }
-  }
-
+export namespace PipelineNodeWithRun {
   // ===================================================================
   /**
    * Trigger Node
    * @description: a starter node to trigger a pipeline, always contains some conditions
    */
-  export interface Trigger extends PipelineNodeWithRun.Trigger, IWithPos {
-    next?: PipelineNodeWithPos.Nexts
-  }
+  export interface Trigger extends PipelineNodeWithNext.Trigger, IWithRun {}
 
   // ===================================================================
   /**
@@ -28,23 +36,21 @@ export namespace PipelineNodeWithPos {
    * @description: a node to split process into several branches according to some judgement condition
    */
 
-  // .................................
   /** 
    * If Node
    * @description: If branch node, judge by conditions to split process into true / false branch
    */
-  export interface If extends PipelineNodeWithRun.If, IWithPos {
+  export interface If extends PipelineNodeWithNext.If, IWithRun {
     trueNext?: Nexts
     falseNext?: Nexts
   }
 
-  // .................................
   /** 
    * Switch Node
-   * @description: Switch-case branch node, judge by a value to split process into several cases branches
+   * @description: Switch-case branch node, judge by a value to split into several cases branches
    */
-  export interface Switch extends PipelineNodeWithRun.Switch, IWithPos {
-    caseNexts: Nexts[]
+  export interface Switch extends PipelineNodeWithNext.Switch, IWithRun {
+    caseNexts?: Array<Nexts | undefined>
   }
 
   /**
@@ -58,40 +64,41 @@ export namespace PipelineNodeWithPos {
    * @description:  A node to process sequentially
    */
   // .................................
-  // 2.1. Preset Tasks
+  // 3.1) Preset task
+
   /**
    * Task to update data field 
    * (Preset task)
    */
-  export interface TaskUpdate extends PipelineNodeWithRun.TaskUpdate, IWithPos {
-    next?: PipelineNodeWithPos.Nexts
-  }
+  export interface TaskUpdate extends PipelineNodeWithNext.TaskUpdate, IWithRun {}
 
   /**
    * Task to browse MCH data
    * (Preset task)
    */
-  export interface TaskMCH extends PipelineNodeWithRun.TaskMCH, IWithPos {
-    next?: PipelineNodeWithPos.Nexts
-  }
+  export interface TaskMCH extends PipelineNodeWithNext.TaskMCH, IWithRun {}
 
+  /**
+   * Preset Tasks
+   */
   export type PresetTasks = TaskUpdate | TaskMCH
 
   // .................................
+  // 3.2) Customized task
+
   /**
    * Custom Task Node's base interface
    */
-  export interface TaskCustom<T extends string> extends PipelineNodeWithRun.TaskCustom<T>, IWithPos{
-    next?: PipelineNodeWithPos.Nexts
-  }
+  export interface TaskCustom<T extends string> extends PipelineNodeWithNext.TaskCustom<T>, IWithRun {}
 
   // ......................
   /**
-   * All Tasks Nodes = Preset Task Nodes  +  Custom Task Nodes
+   * All Tasks nodes
+   * @description: a node to process task in = Preset Task Nodes  +  Custom Task Nodes
    */
   export type Tasks = PresetTasks | TaskCustom<any>
 
-  // ----------------------------------------------------
+  // ====================================================================
   /**
    * Next Pipeline Nodes: Gateway Nodes + Task Nodes
    */
@@ -101,6 +108,5 @@ export namespace PipelineNodeWithPos {
   /**
    * All Pipeilne Nodes
    */
-  export type All = Nexts | Trigger
+  export type All = Trigger | Nexts
 }
-

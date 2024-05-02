@@ -18,9 +18,10 @@ interface PipelinTriggerNodeCompProps extends IWithEditor {
 }
 
 const PipelineTriggerNode: React.FC<PipelinTriggerNodeCompProps> = (props) => {
-  const { 
-    node, 
-    editable = false, editing = false, changed, onEdit, cancelEditing 
+  const {
+    node,
+    editable = false, editing = false, changed, 
+    onEdit, saveEditing, cancelEditing 
   } = props
 
   const { readableFields } = useContext<PipelineContextProps>(PipelineContext)
@@ -40,11 +41,12 @@ const PipelineTriggerNode: React.FC<PipelinTriggerNodeCompProps> = (props) => {
   return (
     <PipelineBaseNode
       label={nodeTypeDef?.nodeName ?? 'Trigger'} {...nodeTypeStyle}
-      abstract={abstractDesc} desc={node.desc}
-      editable={editable} editing={editing} startEdit={onEditNode} endEdit={cancelEditing}
-      changed={changed}
+      abstract={abstractDesc} desc={node.desc} run={node?.run}
+      editable={editable} editing={editing} changed={changed}
+      saveEditing={saveEditing} cancelEditing={cancelEditing}
+      onEdit={onEditNode}
     >
-      <QueryConditionSelector 
+      <QueryConditionSelector
         fieldList={readableFields ?? []}
         value={node.condition} nested operatorOptionFixed
         layout={'vertical'} size={'small'} defaultExpanded

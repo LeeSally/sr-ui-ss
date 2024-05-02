@@ -10,18 +10,17 @@ export interface UsePipelineNodeDelProps {
 
 /**
  * Hook to delete pipeline node
- * @returns 
+ * @returns
  */
 const usePipelineNodeDel = (
   trigger?: PipelineNodeWithNext.Trigger,
-  onChange?:(trigger: PipelineNodeWithNext.Trigger) => void,
+  onChange?: (trigger: PipelineNodeWithNext.Trigger) => void,
   endEdit?: () => void
 ): UsePipelineNodeDelProps => {
-
   /**
    * Delete one node, parent node of it will link to its next nodes chain
-   * @param node 
-   * @returns 
+   * @param node
+   * @returns
    */
   const onDeleteNode = (node: PipelineNodeWithPos.Nexts): void => {
     const newTrigger = cloneObject(trigger)
@@ -63,7 +62,6 @@ const usePipelineNodeDel = (
           default: console.warn('Only keep one branch node, remove unneeded nodes first', node)
         }
       }
-
     } else if (rawParent.nodeType === PIPELINE_NODE.Type.IF) {
       // 2. Parent Node = IF
       // [0]: True branch,   [1]: False branch
@@ -108,7 +106,7 @@ const usePipelineNodeDel = (
   }
 
   return {
-    onDeleteNode,
+    onDeleteNode
   }
 }
 

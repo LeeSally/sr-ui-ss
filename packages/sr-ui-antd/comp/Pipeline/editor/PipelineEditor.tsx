@@ -45,7 +45,7 @@ const PipelineEditor: React.FC<PipelineEditorProps> = (props) => {
   const {
     editingNode, changed,
     cancelEditing, saveEditing,
-    changeIfNode, changeTriggerNode, changeSwitchNode,
+    changeIfNode, changeTriggerNode, changeSwitchNode
   } = pipelineEditor
 
   const { nodeTypeDef, nodeTypeStyle, taskDef } = useNodeTypeInfo(

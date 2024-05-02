@@ -39,8 +39,7 @@ const usePipelineNodeEdit = (
     setEditingNodeIndex(node.gridPos.chainIdx)
   })
 
-
-  const preChange = () => {
+  const preChange = (): any => {
     const newTrigger = cloneObject(trigger)
     if (newTrigger === undefined) return {}
 
@@ -51,12 +50,12 @@ const usePipelineNodeEdit = (
 
   /**
    * Change If node
-   * @param {PipelineNodeWithNext.If} ifNode 
+   * @param {PipelineNodeWithNext.If} ifNode
    */
   const changeIfNode = (ifNode?: PipelineNodeWithNext.If): void => {
     const { newTrigger, rawNode } = preChange()
-    if(newTrigger === undefined || rawNode === undefined) return
-    
+    if (newTrigger === undefined || rawNode === undefined) return
+
     const rawIf = rawNode as PipelineNodeWithNext.If
 
     rawIf.judgeCondition = ifNode?.judgeCondition
@@ -68,26 +67,26 @@ const usePipelineNodeEdit = (
 
   /**
    * Change Trigger node
-   * @param {PipelineNodeWithNext.Trigger} triggerNode 
+   * @param {PipelineNodeWithNext.Trigger} triggerNode
    */
   const changeTriggerNode = (triggerNode: PipelineNodeWithNext.Trigger): void => {
     const { newTrigger, rawNode } = preChange()
-    if(newTrigger === undefined || rawNode === undefined) return
-    
+    if (newTrigger === undefined || rawNode === undefined) return
+
     const rawTrigger = rawNode as PipelineNodeWithNext.Trigger
-   
+
     rawTrigger.condition = triggerNode?.condition
     setEditingTrigger?.(newTrigger)
   }
 
   /**
    * Change Switch node
-   * @param {PipelineNodeWithNext.Switch} triggerNode 
+   * @param {PipelineNodeWithNext.Switch} triggerNode
    */
   const changeSwitchNode = (switchNode: PipelineNodeWithNext.Switch): void => {
     const { newTrigger, rawNode } = preChange()
-    if(newTrigger === undefined || rawNode === undefined) return
-    
+    if (newTrigger === undefined || rawNode === undefined) return
+
     const rawSwitch = rawNode as PipelineNodeWithNext.Switch
 
     rawSwitch.judgeField = switchNode?.judgeField
@@ -96,7 +95,6 @@ const usePipelineNodeEdit = (
 
     setEditingTrigger?.(newTrigger)
   }
-  
 
   const saveEditing = (): void => {
     if (editingTrigger === undefined) return
@@ -116,7 +114,6 @@ const usePipelineNodeEdit = (
     return rawNode
   }, [editingNodeIndex, editingTrigger, trigger])
 
-  
   const isEditing = (node: PipelineNodeWithPos.All): boolean => {
     return isEquals(editingNodeIndex, node?.gridPos.chainIdx)
   }

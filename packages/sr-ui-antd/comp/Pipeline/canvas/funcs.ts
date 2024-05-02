@@ -6,10 +6,10 @@ import { PIPELINE_NODE } from '../node/consts'
 
 /**
  * Traverse Pipeline If node
- * @param {PipelineNodeWithNext.If} ifNode 
+ * @param {PipelineNodeWithNext.If} ifNode
  * @param {[number, number]} start         coordinate of this node's start position
- * @param idx 
- * @returns 
+ * @param idx
+ * @returns
  */
 const traverseIfNode = (
   ifNode: PipelineNodeWithNext.If,
@@ -31,19 +31,19 @@ const traverseIfNode = (
       end: [
         Math.max(trueNode?.gridPos.end[0] ?? start[0], falseNode?.gridPos.end[0] ?? start[0]),
         Math.max(trueNode?.gridPos.end[1] ?? start[1], falseNode?.gridPos.end[1] ?? start[1]),
-      ],
+      ]
     },
     trueNext: trueNode,
-    falseNext: falseNode,
+    falseNext: falseNode
   })
 }
 
 /**
  * Traverse Pipeline Switch Node
- * @param {PipelineNodeWithNext.Switch} node 
- * @param {[number, number]} start         coordinate of this node's start position
- * @param {number[]} idx 
- * @returns 
+ * @param {PipelineNodeWithNext.Switch} node
+ * @param {[number, number]} start        coordinate of this node's start position
+ * @param {number[]} idx
+ * @returns
  */
 const traverseSwitchNode = (
   node: PipelineNodeWithNext.Switch,
@@ -78,18 +78,18 @@ const traverseSwitchNode = (
     gridPos: {
       chainIdx: idx,
       start,
-      end: maxEnd,
+      end: maxEnd
     },
-    caseNexts,
+    caseNexts
   })
 }
 
 /**
  * Traverse Pipeline Task node
- * @param {PipelineNodeWithNext.Tasks} node 
+ * @param {PipelineNodeWithNext.Tasks} node
  * @param {[number, number]} start
- * @param {number[]} idx 
- * @returns 
+ * @param {number[]} idx
+ * @returns
  */
 const traverseTaskNode = (
   node: PipelineNodeWithNext.Tasks,
@@ -113,9 +113,9 @@ const traverseTaskNode = (
 
 /**
  * Traverse Pipeline Trigger Node
- * @param {PipelineNodeWithNext.Trigger} node 
- * @param {[number, number]} start 
- * @param {number[]} idx 
+ * @param {PipelineNodeWithNext.Trigger} node
+ * @param {[number, number]} start
+ * @param {number[]} idx
  * @returns 
  */
 export const traverseTriggerNode = (
@@ -136,7 +136,6 @@ export const traverseTriggerNode = (
   }
 }
 
-
 const traverseNode = (
   node: PipelineNodeWithNext.Nexts,
   start: [number, number],
@@ -154,9 +153,9 @@ const traverseNode = (
 
 /**
  * Find target node according to chain index
- * @param {number[]} targetIndex    chain index of target node 
+ * @param {number[]} targetIndex    chain index of target node
  * @param {PipelineNodeWithPos.All} curNode     current node to be searched
- * @returns 
+ * @returns
  */
 export const findNode = (
   targetIndex: number[],

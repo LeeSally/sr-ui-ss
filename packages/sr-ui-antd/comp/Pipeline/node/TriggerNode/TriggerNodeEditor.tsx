@@ -6,7 +6,7 @@ import { QueryConditionSelector } from '../../../QueryConditionEditor'
 import type { ConditionGroupProps, ConditionItemProps } from '../../../QueryConditionEditor/types'
 
 import { type PipelineContextProps, PipelineContext } from '../../context'
-import { PipelineNodeWithNext } from '../../types'
+import type { PipelineNodeWithNext } from '../../types'
 
 interface PipelineTriggerNodeEditorProps {
   node: PipelineNodeWithNext.Trigger

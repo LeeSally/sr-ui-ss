@@ -7,7 +7,12 @@ import { PlusOutlined } from '@ant-design/icons'
 import { useMemoizedFn } from 'ahooks'
 
 import { PipelineContext } from '../context'
-import type { PipelineNodeWithNext, PipelineNodeWithPos, DOMPosSize, IWithEditor } from '../types'
+import type {
+  PipelineNodeWithNext,
+  PipelineNodeWithRun,
+  PipelineNodeWithPos,
+  DOMPosSize, IWithEditor
+} from '../types'
 
 import { PIPELINE_NODE } from '../node/consts'
 
@@ -24,7 +29,7 @@ import { clsPrefix } from '../vars'
 import './style.less'
 
 interface PipelineCanvasProps {
-  trigger?: PipelineNodeWithNext.Trigger
+  trigger?: PipelineNodeWithNext.Trigger | PipelineNodeWithRun.Trigger
   editor?: UsePipelineEditorProps
 
   layout?: 'flex' | 'table'
@@ -215,7 +220,6 @@ const PipelineCanvas: React.FC<PipelineCanvasProps> = (props) => {
   const nextNodeItems: MenuProps['items'] = [
     ...Object.values(PIPELINE_NODE.Type).map(nodeKey => {
       const nodeType = nodeKey as PIPELINE_NODE.Type
-
       return ({
         key: nodeKey,
         label: PIPELINE_NODE.DEFS[nodeType]?.nodeName,
@@ -226,24 +230,24 @@ const PipelineCanvas: React.FC<PipelineCanvasProps> = (props) => {
     {
       type: 'divider'
     },
+    // {
+    //   key: 'preset-task',
+    //   label: 'Preset Task',
+    //   icon: PIPELINE_NODE.STYLES[PIPELINE_NODE.Type.TASK]?.icon,
+    //   children: [
+    //     ...Object.values(PIPELINE_NODE.PresetTaskKey).map(taskKey => (
+    //       {
+    //         key: `${PIPELINE_NODE.Type.TASK ?? 'task'}-${taskKey}`,
+    //         label: PIPELINE_NODE.PRESET_TASK_DEFS[taskKey].taskName,
+    //         icon: PIPELINE_NODE.PRESET_TASK_STYLES[taskKey].icon,
+    //         onClick: onAddingNode?.(PIPELINE_NODE.Type.TASK, taskKey)
+    //       }
+    //     )
+    //     )
+    //   ]
+    // },
     {
-      key: 'preset-task',
-      label: 'Preset Task',
-      icon: PIPELINE_NODE.STYLES[PIPELINE_NODE.Type.TASK]?.icon,
-      children: [
-        ...Object.values(PIPELINE_NODE.PresetTaskKey).map(taskKey => (
-          {
-            key: `${PIPELINE_NODE.Type.TASK ?? 'task'}-${taskKey}`,
-            label: PIPELINE_NODE.PRESET_TASK_DEFS[taskKey].taskName,
-            icon: PIPELINE_NODE.PRESET_TASK_STYLES[taskKey].icon,
-            onClick: onAddingNode?.(PIPELINE_NODE.Type.TASK, taskKey)
-          }
-        )
-        )
-      ]
-    },
-    {
-      key: 'custom-task',
+      key: 'task',
       label: 'Custom Task',
       icon: PIPELINE_NODE.STYLES[PIPELINE_NODE.Type.TASK]?.icon,
       children: [
@@ -391,7 +395,11 @@ const PipelineCanvas: React.FC<PipelineCanvasProps> = (props) => {
             </div>
             : null
       }
-      <SvgLayer flowLines={flowLines} cellsSize={cellsSize} containerSize={containerSize} />
+      <SvgLayer
+        flowLines={flowLines}
+        cellsSize={cellsSize}
+        containerSize={containerSize}
+      />
     </div>
   )
 }

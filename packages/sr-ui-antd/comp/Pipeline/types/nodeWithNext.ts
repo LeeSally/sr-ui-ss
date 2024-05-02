@@ -12,7 +12,7 @@ export namespace PipelineNodeWithNext {
     next?: Nexts
   }
 
-  //===================================================================
+  // ===================================================================
   /**
    * Trigger Node
    * @description: a starter node to trigger a pipeline, always contains some conditions
@@ -20,7 +20,7 @@ export namespace PipelineNodeWithNext {
   export interface Trigger  extends PipelineNodeDef.Trigger, IWithNext {
   }
 
-  //===================================================================
+  // ===================================================================
   /**
    * Gateway Node
    * @description: a node to split process into several branches according to some judgement condition
@@ -48,7 +48,7 @@ export namespace PipelineNodeWithNext {
    */
   export type Gateway = If | Switch
 
-  //===================================================================
+  // ===================================================================
   /**
    * Task Node
    * @description:  A node to process sequentially
@@ -57,7 +57,7 @@ export namespace PipelineNodeWithNext {
   /**
    * Task Node's base interface
    */
-  interface ITaskBase<T extends string> extends PipelineNodeDef.ITaskBase<T>, IWithNext {
+  export interface ITaskBase<T extends string> extends PipelineNodeDef.ITaskBase<T>, IWithNext {
   }
 
   // .................................
@@ -67,13 +67,13 @@ export namespace PipelineNodeWithNext {
    * Task to update data field 
    * (Preset task)
    */
-  export type TaskUpdate = ITaskBase<PIPELINE_NODE.PresetTaskKey.UPDATE_FIELDS>
+  export interface TaskUpdate extends PipelineNodeDef.TaskUpdate, ITaskBase<PIPELINE_NODE.PresetTaskKey.UPDATE_FIELDS>{}
 
   /**
    * Task to browse MCH data
    * (Preset task)
    */
-  export type TaskMCH = ITaskBase<PIPELINE_NODE.PresetTaskKey.BROWSE_MCH>
+  export interface TaskMCH extends PipelineNodeDef.TaskMCH, ITaskBase<PIPELINE_NODE.PresetTaskKey.BROWSE_MCH>{}
 
   /**
    * Preset Tasks
@@ -86,16 +86,16 @@ export namespace PipelineNodeWithNext {
   /**
    * Custom Task Node's base interface
    */
-  export type CustomTask<T extends string> = ITaskBase<T>
+  export interface TaskCustom<T extends string> extends PipelineNodeDef.TaskCustom<T>, ITaskBase<T>{}
 
   // ......................
   /**
    * All Tasks nodes
    * @description: a node to process task in = Preset Task Nodes  +  Custom Task Nodes
    */
-  export type Tasks = PresetTasks| CustomTask<any>
+  export type Tasks = PresetTasks| TaskCustom<any>
 
-  //  ====================================================================
+  // ====================================================================
   /**
    * Next Pipeline Nodes: Gateway Nodes + Task Nodes
    */

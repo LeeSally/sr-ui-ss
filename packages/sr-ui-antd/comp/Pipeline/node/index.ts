@@ -3,7 +3,7 @@ import TriggerNode from './TriggerNode'
 import IfNode from './IfNode'
 import SwitchNode from './SwitchNode'
 
-import { CustomTaskNode, MCHTaskNode, UpdateTaskNode, } from './TaskNode'
+import { CustomTaskNode, MCHTaskNode, UpdateTaskNode } from './TaskNode'
 
 export {
   TriggerNode,
@@ -13,5 +13,5 @@ export {
 
   CustomTaskNode,
   MCHTaskNode,
-  UpdateTaskNode,
+  UpdateTaskNode
 }

@@ -1,32 +1,27 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { Space, Button, Popconfirm, Badge } from 'antd'
 import {
   DownOutlined, UpOutlined, QuestionCircleOutlined,
   EditOutlined, CloseOutlined, SaveOutlined, DeleteOutlined, UserOutlined
 } from '@ant-design/icons'
-import * as antIcons from '@ant-design/icons'
 import { useToggle } from 'ahooks'
 
 import { classNames } from 'sr-ui-utils'
 
+import type { IWithStyle, IWithEditor, IWithRun } from '../../types'
+
 import { clsPrefix } from '../../vars'
 import './style.less'
-import { IWithStyle } from '../../types'
+import { RUN_STATUS_STYLE } from './consts'
+import { RunStatus } from '../../types/nodeWithRun'
 
-interface PipelineBaseNodeCompProps extends React.PropsWithChildren<any>, IWithStyle {
+interface PipelineBaseNodeCompProps extends React.PropsWithChildren<any>, IWithStyle, IWithEditor, IWithRun {
   label: string
   abstract?: string
   desc?: string
 
-  editable?: boolean
-  editing?: boolean
-  startEdit?: () => void
-  endEdit?: () => void
-
-  changed?: boolean
-
-  onSave?: (val: any) => void
+  onEdit?: () => void
   onDel?: () => void
 }
 
@@ -37,10 +32,12 @@ interface PipelineBaseNodeCompProps extends React.PropsWithChildren<any>, IWithS
  */
 const PipelineBaseNode: React.FC<PipelineBaseNodeCompProps> = (props) => {
   const {
-    label, icon, abstract, desc, color = 'default',
+    label, abstract, desc,
+    icon, color = 'default', run,
     children,
-    editable = false, editing = false, startEdit, endEdit,
-    changed = false, onSave, onDel
+    editable = false, editing = false, changed = false,
+    saveEditing, cancelEditing,
+    onEdit, onDel
   } = props
 
   const [expanded, { toggle: toggleExpand, set: setExpand }] = useToggle(false)
@@ -51,12 +48,19 @@ const PipelineBaseNode: React.FC<PipelineBaseNodeCompProps> = (props) => {
     }
   }, [editing])
 
+  const runStatus = useMemo(() => {
+    return RUN_STATUS_STYLE[run?.status as RunStatus]
+  }, [run?.status])
+
   return (
-    <div className={classNames(
-      `${clsPrefix}-node-base`,
-      editing ? 'editing' : '',
-      color
-    )}>
+    <div
+      className={classNames(
+        `${clsPrefix}-node-base`,
+        editing ? 'editing' : '',
+        color
+      )}
+      style={{ borderColor: runStatus?.color, backgroundColor: runStatus?.bgColor }}
+    >
       <div className={classNames(`${clsPrefix}-node-base-label`, expanded ? '' : 'up')}>
         <span className={classNames(`${clsPrefix}-node-base-label-icon-box`, color)}>
           {icon ?? <QuestionCircleOutlined />}
@@ -65,6 +69,23 @@ const PipelineBaseNode: React.FC<PipelineBaseNodeCompProps> = (props) => {
           <span className={`${clsPrefix}-node-base-label-title-inner`}>
             <span className={`${clsPrefix}-node-base-label-title-inner-name`} title={label}>
               {label}
+            </span>
+            <span
+              className={classNames(`${clsPrefix}-node-base-label-title-inner-status`)}
+              title={runStatus?.label}
+            >
+              <span
+                className={classNames(`${clsPrefix}-node-base-label-title-inner-status-icon`)}
+                style={{ backgroundColor: runStatus?.color }}
+              >
+                {runStatus?.icon}
+              </span>
+              <span
+                className={classNames(`${clsPrefix}-node-base-label-title-inner-status-label`)}
+                style={{ color: runStatus?.color }}
+              >
+                {runStatus?.label}
+              </span>
             </span>
             <span className={classNames(`${clsPrefix}-node-base-label-title-inner-btn-edit`,
               !editable ? 'hide' : '',
@@ -77,12 +98,12 @@ const PipelineBaseNode: React.FC<PipelineBaseNodeCompProps> = (props) => {
                       icon={<Badge dot size={'small'} count={changed ? 1 : 0}>
                         <SaveOutlined />
                       </Badge>}
-                      onClick={onSave} title={'Save Change'} disabled={!changed}
+                      onClick={saveEditing} title={'Save Change'} disabled={!changed}
                     />
-                    <Button type={'link'} size={'small'} icon={<CloseOutlined />} onClick={endEdit} title={'Cancel Change'} />
+                    <Button type={'link'} size={'small'} icon={<CloseOutlined />} onClick={cancelEditing} title={'Cancel Change'} />
                   </Space>
                   : <Space size={3}>
-                    <Button type={'link'} size={'small'} icon={<EditOutlined />} onClick={startEdit} />
+                    <Button type={'link'} size={'small'} icon={<EditOutlined />} onClick={onEdit} />
                     {
                       onDel !== undefined
                         ? <Popconfirm

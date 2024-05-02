@@ -9,13 +9,16 @@ import { useNodeTypeInfo } from '../hooks'
 
 import PipelineBaseNode from '../BaseNode'
 
-
 interface PipelineMCHTaskNodeCompProps extends IWithEditor {
   node: PipelineNodeWithPos.TaskMCH
 }
 
 const PipelineMCHTaskNode: React.FC<PipelineMCHTaskNodeCompProps> = (props) => {
-  const { node, editable = false, editing, changed, cancelEditing, onEdit, onDel } = props
+  const { 
+    node, 
+    editable = false, editing, changed = false, 
+    onEdit, onDel, saveEditing, cancelEditing, 
+  } = props
 
   const { nodeTypeStyle, taskDef } = useNodeTypeInfo(PIPELINE_NODE.Type.TASK, node.taskKey)
 
@@ -35,9 +38,10 @@ const PipelineMCHTaskNode: React.FC<PipelineMCHTaskNodeCompProps> = (props) => {
   return (
     <PipelineBaseNode
       label={taskDef?.taskName ?? 'MCH browse task'} {...nodeTypeStyle}
-      abstract={abstractDesc} desc={node.desc}
-      editable={editable} editing={editing} changed={changed} startEdit={onEditNode} endEdit={cancelEditing}
-      onDel={onDelNode}
+      abstract={abstractDesc} desc={node.desc} run={node?.run}
+      editable={editable} editing={editing} changed={changed} 
+      saveEditing={saveEditing} cancelEditing={cancelEditing}
+      onEdit={onEditNode} onDel={onDelNode}
     >
       <List
         dataSource={node.browseList}

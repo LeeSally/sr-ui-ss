@@ -3,7 +3,7 @@ import type {
   ConditionItemProps,
   FieldProps
 } from '../../QueryConditionEditor/types'
-import { IWithStyle } from './'
+import type { IWithStyle } from './'
 import type { PIPELINE_NODE } from '../node/consts'
 
 /**
@@ -19,7 +19,7 @@ export namespace PipelineNodeDef {
     desc?: string
   }
 
-  //===================================================================
+  // ===================================================================
   /**
    * Trigger Node
    * @description: a starter node to trigger a pipeline, always contains some conditions
@@ -28,13 +28,13 @@ export namespace PipelineNodeDef {
     condition?: ConditionGroupProps | ConditionItemProps
   }
 
-  //===================================================================
+  // ===================================================================
   /**
    * Gateway Node
    * @description: a node to split process into several branches according to some judgement condition
    */
 
-  /** 
+  /**
    * If Node
    * @description: If branch node, judge by conditions to split process into true / false branch
    */
@@ -56,7 +56,7 @@ export namespace PipelineNodeDef {
    */
   export type Gateway = If | Switch
 
-  //===================================================================
+  // ===================================================================
   /**
    * Task Node
    * @description:  A node to process sequentially
@@ -74,7 +74,7 @@ export namespace PipelineNodeDef {
   // 3.1) Preset task Node
 
   /**
-   * Task to update data field 
+   * Task to update data field
    * (Preset task)
    */
   export interface TaskUpdate extends ITaskBase<PIPELINE_NODE.PresetTaskKey.UPDATE_FIELDS> {

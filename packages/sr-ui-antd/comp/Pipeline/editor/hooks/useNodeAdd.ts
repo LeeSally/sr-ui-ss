@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 
 import { useMemoizedFn } from 'ahooks'
 
-import { PipelineNodeDef, PipelineNodeWithNext, PipelineNodeWithPos } from '../../types'
+import type { PipelineNodeDef, PipelineNodeWithNext, PipelineNodeWithPos } from '../../types'
 import { PipelineContext } from '../../context'
 import { PIPELINE_NODE } from '../../node/consts'
 
@@ -21,7 +21,7 @@ export interface UsePipelineNodeAddProps {
 
 /**
  * Hook to add (insert) pipeline node
- * @returns 
+ * @returns
  */
 const usePipelineNodeAdd = (
   trigger?: PipelineNodeWithNext.Trigger,
@@ -37,9 +37,9 @@ const usePipelineNodeAdd = (
 
   /**
    * Set node type of newing node
-   * @param {PIPELINE_NODE.Type} nodeType 
-   * @param {string} taskKey 
-   * @returns 
+   * @param {PIPELINE_NODE.Type} nodeType
+   * @param {string} taskKey
+   * @returns
    */
   const onAddingNode = useMemoizedFn((
     nodeType?: PIPELINE_NODE.Type,
@@ -53,8 +53,8 @@ const usePipelineNodeAdd = (
 
   /**
    * Set parent node of newing node
-   * @param {PipelineNodeWithPos.All} parent 
-   * @returns 
+   * @param {PipelineNodeWithPos.All} parent
+   * @returns
    */
   const onAddingParent = useMemoizedFn((parent: PipelineNodeWithPos.All) => (opened: boolean) => {
     if (!opened) return
@@ -75,7 +75,7 @@ const usePipelineNodeAdd = (
       console.error('[Error]: Cannot find parent node', parentIndex, newTrigger)
       return
     }
-    // ------- 
+    // -------
     // 1) newing node
     const newIfNode: PipelineNodeWithNext.If = {
       ...PIPELINE_NODE.DEFS[PIPELINE_NODE.Type.IF] as PipelineNodeDef.IBase<PIPELINE_NODE.Type.IF>
@@ -165,7 +165,7 @@ const usePipelineNodeAdd = (
   return {
     addingNode,
     onAddingNode,
-    onAddingParent,
+    onAddingParent
   }
 }
 

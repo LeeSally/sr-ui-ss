@@ -23,7 +23,8 @@ interface PipeilneIfNodeCompProps extends IWithEditor {
 const PipelineIfNode: React.FC<PipeilneIfNodeCompProps> = (props) => {
   const {
     node,
-    editable = false, editing = false, changed, onEdit, saveEditing, cancelEditing, onDel
+    editable = false, editing = false, changed = false, 
+    onEdit, onDel, saveEditing, cancelEditing
   } = props
 
   const { readableFields } = useContext(PipelineContext)
@@ -44,10 +45,10 @@ const PipelineIfNode: React.FC<PipeilneIfNodeCompProps> = (props) => {
   return (
     <PipelineBaseNode
       label={nodeTypeDef?.nodeName ?? 'If'} {...nodeTypeStyle}
-      desc={node.desc} abstract={abstractDesc}
-      editable={editable} editing={editing} startEdit={onEditNode} endEdit={cancelEditing}
-      changed={changed}
-      onSave={saveEditing} onDel={onDelNode}
+      desc={node.desc} abstract={abstractDesc} run={node?.run}
+      editable={editable} editing={editing} changed={changed}
+      saveEditing={saveEditing} cancelEditing={cancelEditing}
+      onEdit={onEditNode} onDel={onDelNode}
     >
       <QueryConditionSelector
         fieldList={readableFields ?? []}

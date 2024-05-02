@@ -6,7 +6,7 @@ import type { TableProps } from 'antd'
 import type { FieldProps } from '../../../QueryConditionEditor/types'
 
 import { PipelineContext } from '../../context'
-import { PipelineNodeWithNext } from '../../types'
+import type { PipelineNodeWithNext } from '../../types'
 
 interface PipelineTaskNodeEditorProps {
   node: PipelineNodeWithNext.Tasks
@@ -33,12 +33,12 @@ const PipelineTaskNodeEditor: React.FC<PipelineTaskNodeEditorProps> = (props) =>
       dataIndex: 'dataType',
       title: 'Data Type',
       width: 60
-    },
+    }
   ]
 
   const customTaskDef = useMemo(() =>
     customTaskDefs?.find(def => def.taskKey === node.taskKey)
-    , [node, customTaskDefs])
+  , [node, customTaskDefs])
 
   return (
     <Descriptions column={1} layout={'vertical'}

@@ -2,7 +2,7 @@ import type { PipelineNodeWithPos } from './'
 
 // Pipeline base node's UI style
 export interface IWithStyle {
-  color?: 'default' | 'danger' | 'warning' | 'success'
+  color?: string | 'default' | 'danger' | 'warning' | 'success'
   icon?: React.ReactElement
 }
 
@@ -28,7 +28,11 @@ export namespace FlowLine {
   export interface Item {
     pos: [number, number]
     tag?: { text: string, color?: string, size?: number }
-    lineStyle?: { color: string, width: number }
+    lineStyle?: { 
+      color: string, 
+      width?: number,
+      solid?: boolean
+    }
   }
 
   export type Matrix = Item[][][]

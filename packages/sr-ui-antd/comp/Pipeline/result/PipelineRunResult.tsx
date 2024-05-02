@@ -1,13 +1,13 @@
 import React from 'react'
 
-import type { IPipeline } from '../types'
+import type { IPipelineWithRun } from '../types'
 
 import PipelineCanvas from '../canvas'
 
 import style from './style.less'
 
 interface PipelineRunResultProps {
-  pipelineDef?: IPipeline
+  pipelineDef?: IPipelineWithRun
   loading?: boolean
 }
 

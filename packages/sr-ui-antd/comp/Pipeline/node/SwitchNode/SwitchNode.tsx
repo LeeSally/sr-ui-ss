@@ -14,10 +14,11 @@ interface PipelineSwitchNodeCompProps extends IWithEditor {
 }
 
 const PipelineSwitchNode: React.FC<PipelineSwitchNodeCompProps> = (props) => {
-  const { 
+  const {
     node,
-    editable = false, editing = false, changed, cancelEditing, onEdit, saveEditing,
-    onDel
+    editable = false, editing = false, changed = false, 
+    onEdit, onDel,
+    cancelEditing, saveEditing
   } = props
 
   const { nodeTypeDef, nodeTypeStyle } = useNodeTypeInfo(PIPELINE_NODE.Type.SWITCH)
@@ -42,9 +43,10 @@ const PipelineSwitchNode: React.FC<PipelineSwitchNodeCompProps> = (props) => {
   return (
     <PipelineBaseNode
       label={nodeTypeDef?.nodeName ?? 'Switch'} {...nodeTypeStyle}
-      abstract={abstractDesc} desc={node.desc}
-      editable={editable} editing={editing} startEdit={onEditNode} endEdit={cancelEditing}
-      onSave={saveEditing} onDel={onDelNode} changed={changed}
+      abstract={abstractDesc} desc={node.desc} run={node?.run}
+      editable={editable} editing={editing} changed={changed}
+      saveEditing={saveEditing} cancelEditing={cancelEditing}
+      onEdit={onEditNode} onDel={onDelNode}
     >
       <Descriptions column={1} size={'small'}>
         <Descriptions.Item label={'Field'}>

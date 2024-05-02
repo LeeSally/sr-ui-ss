@@ -9,6 +9,6 @@ export {
 
   MCHTaskNode,
   UpdateTaskNode,
-  
-  TaskNodeEditor,
+
+  TaskNodeEditor
 }

@@ -2,7 +2,7 @@
    * Clone object using JSON.parse method
    * @param {any} raw
    */
-const cloneObject = (raw: any) => {
+const cloneObject = (raw: any): any => {
   if (raw === undefined) return
 
   try {

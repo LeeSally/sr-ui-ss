@@ -77,6 +77,34 @@
           white-space: pre-wrap;
         }
 
+        &-status{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 3px;
+
+          &-icon{
+            width: 12px;
+            height: 12px;
+            box-sizing: border-box;
+            padding: 2px;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 3px;
+
+            font-size: 10px;
+            color: #fff;
+            font-weight: 600;
+          }
+
+          &-label {
+            font-size: 8px;
+          }
+        }
+
         &-btn-edit {
           display: flex;
           min-width: 56px;

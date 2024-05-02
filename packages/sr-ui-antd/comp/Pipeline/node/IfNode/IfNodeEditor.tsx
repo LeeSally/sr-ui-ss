@@ -66,12 +66,11 @@ const PipelineIfNodeEditor: React.FC<PipelineIfNodeEditorProps> = (props) => {
       const newIf: PipelineNodeWithNext.If = {
         ...node,
       }
-      newIf[nextKey ? 'trueNext' : 'falseNext'] = newNextNode
+      newIf[nextKey === true ? 'trueNext' : 'falseNext'] = newNextNode
       onChange?.(newIf)
 
       return nextKey
     })
-
   }, [newingNexts])
 
   return (

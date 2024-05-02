@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { RUN_STATUS_STYLE } from '../../node/BaseNode/consts'
 
 import { PIPELINE_NODE } from '../../node/consts'
 import type { PipelineNodeWithNext, FlowLine, PipelineNodeWithPos } from '../../types'
+import { RunStatus } from '../../types/nodeWithRun'
 
 import { traverseTriggerNode } from '../funcs'
 
@@ -33,7 +35,7 @@ const useGridLine = (trigger?: PipelineNodeWithNext.Trigger): UseGridLineProps =
    * Put pipeline node into grid
    * @param {PipelineNodeWithPos.Nexts | PipelineNodeWithPos.Trigger} node     the pipeline node to be added
    * @param {PipelineNodeWithPos.All[][]} matrix                  the matrix of grid cells
-   * @returns 
+   * @returns
    */
   const drawNodeToGrid = (
     node?: PipelineNodeWithPos.All,
@@ -42,7 +44,7 @@ const useGridLine = (trigger?: PipelineNodeWithNext.Trigger): UseGridLineProps =
     if (node === undefined || matrix === undefined) return
 
     // put current node into grid
-    const [startX, startY] = node.gridPos.start
+    const [startX, startY] = node?.gridPos.start
     if (matrix[startX] === undefined) {
       matrix[startX] = []
     }
@@ -73,7 +75,7 @@ const useGridLine = (trigger?: PipelineNodeWithNext.Trigger): UseGridLineProps =
    * @param {[number, number]} startPt     the coordination ([x, y]) of start point
    * @param {[number, number]} endPt       the coordination ([x, y]) of end point
    * @param {Omit<FlowLineProps, 'pos'>} other    other affilicate elements of the connection line between start point and end point
-   * @returns 
+   * @returns
    */
   const addEndPt = (
     lines: FlowLine.Matrix,
@@ -88,10 +90,9 @@ const useGridLine = (trigger?: PipelineNodeWithNext.Trigger): UseGridLineProps =
     }
   }
 
-
   /**
    * Update flow connection lines between pipeline nodes
-   * @param {PipelineNodeWithPos.All} node 
+   * @param {PipelineNodeWithPos.All} node
    * @returns 
    */
   const updateFlowLine = (node?: PipelineNodeWithPos.All): void => {
@@ -108,20 +109,77 @@ const useGridLine = (trigger?: PipelineNodeWithNext.Trigger): UseGridLineProps =
 
       switch (node.nodeType) {
         case PIPELINE_NODE.Type.IF:
-          addEndPt(prev, [currentX, currentY], node.trueNext?.gridPos.start, { tag: { text: 'True', color: 'green' } })
-          addEndPt(prev, [currentX, currentY], node.falseNext?.gridPos.start, { tag: { text: 'False', color: 'red' } })
+          // true 
+          const lineStyleTrue = node.trueNext?.run?.status !== undefined
+            ? {
+              color: RUN_STATUS_STYLE[node.trueNext?.run?.status].color,
+              solid: node.trueNext?.run?.status !== RunStatus.NOT_START
+            }
+            : undefined
+
+          addEndPt(
+            prev,
+            [currentX, currentY],
+            node.trueNext?.gridPos.start,
+            {
+              tag: { text: 'True', color: 'green' },
+              lineStyle: lineStyleTrue
+            }
+          )
+
+          // false 
+          const lineStyleFalse = node.falseNext?.run?.status !== undefined
+            ? {
+              color: RUN_STATUS_STYLE[node.falseNext?.run?.status].color,
+              solid: node.falseNext?.run?.status !== RunStatus.NOT_START
+            }
+            : undefined
+          addEndPt(
+            prev,
+            [currentX, currentY],
+            node.falseNext?.gridPos.start,
+            {
+              tag: { text: 'False', color: 'red' },
+              lineStyle: lineStyleFalse
+            }
+          )
           break
         case PIPELINE_NODE.Type.SWITCH:
           node.caseGroups?.map((caseKeys, index) => {
             const caseNext = node.caseNexts[index]
             const caseKeysStr = caseKeys.join(', ')
-            addEndPt(prev, [currentX, currentY], caseNext?.gridPos.start, { tag: { text: caseKeysStr } })
+
+            const lineStyle = caseNext?.run?.status !== undefined
+              ? {
+                color: RUN_STATUS_STYLE[caseNext?.run?.status].color,
+                solid: caseNext?.run?.status !== RunStatus.NOT_START
+              }
+              : undefined
+
+            addEndPt(
+              prev,
+              [currentX, currentY],
+              caseNext?.gridPos.start,
+              { tag: { text: caseKeysStr }, lineStyle }
+            )
             return caseNext?.gridPos.start
           })
           break
         case PIPELINE_NODE.Type.TASK:
         case PIPELINE_NODE.Type.TRIGGER:
-          addEndPt(prev, [currentX, currentY], node.next?.gridPos.start)
+          const lineStyle = node.next?.run?.status !== undefined
+            ? {
+              color: RUN_STATUS_STYLE[node.next?.run?.status].color,
+              solid: node.next?.run?.status !== RunStatus.NOT_START
+            }
+            : undefined
+
+          addEndPt(
+            prev,
+            [currentX, currentY],
+            node.next?.gridPos.start,
+            { lineStyle }
+          )
           break
       }
       return [...prev]
